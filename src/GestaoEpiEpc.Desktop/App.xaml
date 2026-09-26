@@ -1,0 +1,55 @@
+<Application x:Class="GestaoEpiEpc.Desktop.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:GestaoEpiEpc.Desktop"
+             xmlns:vm="clr-namespace:GestaoEpiEpc.Desktop.ViewModels"
+             xmlns:views="clr-namespace:GestaoEpiEpc.Desktop.Views"
+             xmlns:conv="clr-namespace:GestaoEpiEpc.Desktop.Converters"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             ShutdownMode="OnMainWindowClose">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Blue" SecondaryColor="DeepOrange" />
+                <ResourceDictionary Source="Themes/Colors.xaml" />
+                <ResourceDictionary Source="Themes/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <conv:ProporcaoParaLarguraConverter x:Key="ProporcaoParaLargura" />
+            <conv:ItensParaTextoConverter x:Key="ItensParaTexto" />
+            <conv:StatusEntregaParaCorConverter x:Key="StatusEntregaParaCor" />
+            <conv:StatusColaboradorParaCorConverter x:Key="StatusColaboradorParaCor" />
+            <conv:TipoMovimentacaoParaCorConverter x:Key="TipoMovimentacaoParaCor" />
+            <conv:TipoMovimentacaoParaTextoConverter x:Key="TipoMovimentacaoParaTexto" />
+            <conv:PerfilUsuarioParaCorConverter x:Key="PerfilUsuarioParaCor" />
+            <conv:PerfilUsuarioParaTextoConverter x:Key="PerfilUsuarioParaTexto" />
+            <conv:TipoItemParaIconeConverter x:Key="TipoItemParaIcone" />
+            <conv:IniciaisConverter x:Key="Iniciais" />
+            <conv:BoolParaSimNaoConverter x:Key="BoolParaSimNao" />
+            <conv:EstadoVazioParaVisibilidadeConverter x:Key="EstadoVazioParaVisibilidade" />
+            <BooleanToVisibilityConverter x:Key="BoolParaVisibilidade" />
+
+            <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+                <views:DashboardView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ColaboradoresViewModel}">
+                <views:ColaboradoresView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:CatalogoViewModel}">
+                <views:CatalogoView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:CargosElegibilidadeViewModel}">
+                <views:CargosElegibilidadeView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:EntregasViewModel}">
+                <views:EntregasView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:UsuariosViewModel}">
+                <views:UsuariosView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:AuditoriaViewModel}">
+                <views:AuditoriaView />
+            </DataTemplate>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

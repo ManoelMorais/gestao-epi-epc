@@ -1,0 +1,312 @@
+<UserControl x:Class="GestaoEpiEpc.Desktop.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" d:DesignWidth="1000">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+
+            <Grid Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="VISÃO GERAL" Style="{StaticResource Eyebrow}" Margin="0,0,0,4" />
+                    <TextBlock Text="Dashboard" Style="{StaticResource Titulo1}" />
+                    <TextBlock Text="Visão consolidada das entregas de EPI/EPC" Style="{StaticResource TextoSecundario}" Margin="0,4,0,0" />
+                </StackPanel>
+                <Button Grid.Column="1" Content="Atualizar" Style="{StaticResource BotaoSecundario}"
+                        Command="{Binding AtualizarCommand}" VerticalAlignment="Center" />
+            </Grid>
+
+            <!-- Indicadores principais -->
+            <UniformGrid Columns="7" Margin="0,0,0,20">
+                <Border Style="{StaticResource Cartao}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <Border Width="34" Height="34" CornerRadius="9" Background="{StaticResource PincelAzulSuave}" HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <materialDesign:PackIcon Kind="TruckDelivery" Width="18" Height="18" Foreground="{StaticResource PincelAzul}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <TextBlock Text="ENTREGAS" Style="{StaticResource TextoSecundario}" />
+                        <TextBlock Text="{Binding TotalEntregas}" FontSize="26" FontWeight="Bold" Foreground="{StaticResource PincelInk}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Cartao}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <Border Width="34" Height="34" CornerRadius="9" Background="{StaticResource PincelVerdeSuave}" HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <materialDesign:PackIcon Kind="ShieldAccount" Width="18" Height="18" Foreground="{StaticResource PincelVerde}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <TextBlock Text="EPI ENTREGUES" Style="{StaticResource TextoSecundario}" />
+                        <TextBlock Text="{Binding TotalEpiEntregues}" FontSize="26" FontWeight="Bold" Foreground="{StaticResource PincelInk}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Cartao}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <Border Width="34" Height="34" CornerRadius="9" Background="{StaticResource PincelLaranjaSuave}" HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <materialDesign:PackIcon Kind="TrafficCone" Width="18" Height="18" Foreground="{StaticResource PincelLaranja}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <TextBlock Text="EPC MOVIMENTADOS" Style="{StaticResource TextoSecundario}" />
+                        <TextBlock Text="{Binding TotalEpcMovimentados}" FontSize="26" FontWeight="Bold" Foreground="{StaticResource PincelInk}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Cartao}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <Border Width="34" Height="34" CornerRadius="9" Background="{StaticResource PincelRoxoSuave}" HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <materialDesign:PackIcon Kind="SwapHorizontal" Width="18" Height="18" Foreground="{StaticResource PincelRoxo}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <TextBlock Text="TROCAS" Style="{StaticResource TextoSecundario}" />
+                        <TextBlock Text="{Binding TotalTrocas}" FontSize="26" FontWeight="Bold" Foreground="{StaticResource PincelInk}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Cartao}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <Border Width="34" Height="34" CornerRadius="9" Background="{StaticResource PincelCianoSuave}" HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <materialDesign:PackIcon Kind="UndoVariant" Width="18" Height="18" Foreground="{StaticResource PincelCiano}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <TextBlock Text="ESTORNOS" Style="{StaticResource TextoSecundario}" />
+                        <TextBlock Text="{Binding TotalEstornos}" FontSize="26" FontWeight="Bold" Foreground="{StaticResource PincelInk}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Cartao}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <Border Width="34" Height="34" CornerRadius="9" Background="{StaticResource PincelVermelhoSuave}" HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <materialDesign:PackIcon Kind="AccountAlertOutline" Width="18" Height="18" Foreground="{StaticResource PincelVermelho}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <TextBlock Text="AFAST./INATIVOS" Style="{StaticResource TextoSecundario}" />
+                        <TextBlock Text="{Binding ColaboradoresAfastadosOuInativos}" FontSize="26" FontWeight="Bold" Foreground="{StaticResource PincelInk}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CartaoDestaque}">
+                    <StackPanel>
+                        <Border Width="34" Height="34" CornerRadius="9" Background="#2B4FC7" HorizontalAlignment="Left" Margin="0,0,0,12">
+                            <materialDesign:PackIcon Kind="TrendingUp" Width="18" Height="18" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <TextBlock Text="ÚLTIMOS 30 DIAS" FontSize="11" Foreground="#D7E0FF" />
+                        <TextBlock Text="{Binding EntregasUltimos30Dias}" FontSize="26" FontWeight="Bold" Foreground="White" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- Evolução das entregas -->
+            <Border Style="{StaticResource Cartao}" Margin="0,0,0,20">
+                <StackPanel>
+                    <Grid Margin="0,0,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                            <TextBlock Text="Evolução das entregas" Style="{StaticResource Titulo2}" VerticalAlignment="Center" />
+                            <Border Background="{StaticResource PincelAzulSuave}" CornerRadius="10" Padding="9,3" Margin="10,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding EvolucaoTotalPeriodo, StringFormat={}{0} entregas no período}" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource PincelAzul}" />
+                            </Border>
+                        </StackPanel>
+                        <TextBlock Grid.Column="1" Text="{Binding EvolucaoPeriodo}" Style="{StaticResource TextoSecundario}" VerticalAlignment="Center" />
+                    </Grid>
+
+                    <Grid Margin="0,14,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Eixo Y -->
+                        <Grid Grid.Column="0" Height="130">
+                            <TextBlock Text="{Binding EvolucaoMaximo}" FontSize="10" Foreground="{StaticResource PincelInkSuave}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,-6,6,0" />
+                            <TextBlock Text="{Binding EvolucaoMetade}" FontSize="10" Foreground="{StaticResource PincelInkSuave}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,6,0" />
+                            <TextBlock Text="0" FontSize="10" Foreground="{StaticResource PincelInkSuave}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,6,-6" />
+                        </Grid>
+
+                        <!-- Área do gráfico -->
+                        <Grid Grid.Column="1" Height="130" x:Name="GraficoArea" SizeChanged="GraficoArea_SizeChanged" ClipToBounds="True">
+                            <Border Height="1" Background="{StaticResource PincelLinha}" VerticalAlignment="Top" Opacity="0.7" />
+                            <Border Height="1" Background="{StaticResource PincelLinha}" VerticalAlignment="Center" Opacity="0.7" />
+                            <Border Height="1" Background="{StaticResource PincelLinha}" VerticalAlignment="Bottom" Opacity="0.7" />
+
+                            <Path Data="{Binding EvolucaoArea}" Fill="{StaticResource PincelGradienteGrafico}"
+                                  Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                            <Path Data="{Binding EvolucaoLinha}" Stroke="{StaticResource PincelAzul}" StrokeThickness="2.5"
+                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"
+                                  Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top" />
+
+                            <ItemsControl ItemsSource="{Binding EvolucaoMarcadores}" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Ellipse Width="7" Height="7" Fill="White" Stroke="{StaticResource PincelAzul}" StrokeThickness="1.8"
+                                                 Canvas.Left="{Binding X}" Canvas.Top="{Binding Y}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </Grid>
+
+                    <!-- Eixo X -->
+                    <Grid Margin="0,6,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <ItemsControl Grid.Column="1" ItemsSource="{Binding EvolucaoRotulosEixoX}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Rows="1" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" FontSize="10" Foreground="{StaticResource PincelInkSuave}" HorizontalAlignment="Center" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Rankings -->
+            <UniformGrid Columns="3" Margin="0,0,0,20">
+                <Border Style="{StaticResource Cartao}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <TextBlock Text="Colaboradores que mais receberam" Style="{StaticResource Titulo2}" Margin="0,0,0,12" />
+                        <ItemsControl ItemsSource="{Binding TopColaboradores}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,0,0,10">
+                                        <Grid>
+                                            <TextBlock Text="{Binding Rotulo}" FontSize="12" />
+                                            <TextBlock Text="{Binding Quantidade}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Right" />
+                                        </Grid>
+                                        <Border Height="6" CornerRadius="3" Background="{StaticResource PincelAzulSuave}" Margin="0,4,0,0" HorizontalAlignment="Stretch">
+                                            <Border Height="6" CornerRadius="3" Background="{StaticResource PincelAzul}" HorizontalAlignment="Left"
+                                                    Width="{Binding Proporcao, Converter={StaticResource ProporcaoParaLargura}, ConverterParameter=180}" />
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Cartao}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <TextBlock Text="Itens mais entregues" Style="{StaticResource Titulo2}" Margin="0,0,0,12" />
+                        <ItemsControl ItemsSource="{Binding TopItens}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,0,0,10">
+                                        <Grid>
+                                            <TextBlock Text="{Binding Rotulo}" FontSize="12" />
+                                            <TextBlock Text="{Binding Quantidade}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Right" />
+                                        </Grid>
+                                        <Border Height="6" CornerRadius="3" Background="{StaticResource PincelLaranjaSuave}" Margin="0,4,0,0" HorizontalAlignment="Stretch">
+                                            <Border Height="6" CornerRadius="3" Background="{StaticResource PincelLaranja}" HorizontalAlignment="Left"
+                                                    Width="{Binding Proporcao, Converter={StaticResource ProporcaoParaLargura}, ConverterParameter=180}" />
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Cartao}">
+                    <StackPanel>
+                        <TextBlock Text="Entregas por setor" Style="{StaticResource Titulo2}" Margin="0,0,0,12" />
+                        <ItemsControl ItemsSource="{Binding EntregasPorSetor}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,0,0,10">
+                                        <Grid>
+                                            <TextBlock Text="{Binding Rotulo}" FontSize="12" />
+                                            <TextBlock Text="{Binding Quantidade}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Right" />
+                                        </Grid>
+                                        <Border Height="6" CornerRadius="3" Background="{StaticResource PincelVerdeSuave}" Margin="0,4,0,0" HorizontalAlignment="Stretch">
+                                            <Border Height="6" CornerRadius="3" Background="{StaticResource PincelVerde}" HorizontalAlignment="Left"
+                                                    Width="{Binding Proporcao, Converter={StaticResource ProporcaoParaLargura}, ConverterParameter=180}" />
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- Rankings adicionais -->
+            <UniformGrid Columns="3">
+                <Border Style="{StaticResource Cartao}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <TextBlock Text="Entregas por unidade" Style="{StaticResource Titulo2}" Margin="0,0,0,12" />
+                        <ItemsControl ItemsSource="{Binding EntregasPorUnidade}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,0,0,10">
+                                        <Grid>
+                                            <TextBlock Text="{Binding Rotulo}" FontSize="12" />
+                                            <TextBlock Text="{Binding Quantidade}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Right" />
+                                        </Grid>
+                                        <Border Height="6" CornerRadius="3" Background="{StaticResource PincelCianoSuave}" Margin="0,4,0,0" HorizontalAlignment="Stretch">
+                                            <Border Height="6" CornerRadius="3" Background="{StaticResource PincelCiano}" HorizontalAlignment="Left"
+                                                    Width="{Binding Proporcao, Converter={StaticResource ProporcaoParaLargura}, ConverterParameter=180}" />
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Cartao}" Margin="0,0,10,0">
+                    <StackPanel>
+                        <TextBlock Text="Entregas por facilitador" Style="{StaticResource Titulo2}" Margin="0,0,0,12" />
+                        <ItemsControl ItemsSource="{Binding EntregasPorFacilitador}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,0,0,10">
+                                        <Grid>
+                                            <TextBlock Text="{Binding Rotulo}" FontSize="12" />
+                                            <TextBlock Text="{Binding Quantidade}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Right" />
+                                        </Grid>
+                                        <Border Height="6" CornerRadius="3" Background="{StaticResource PincelRoxoSuave}" Margin="0,4,0,0" HorizontalAlignment="Stretch">
+                                            <Border Height="6" CornerRadius="3" Background="{StaticResource PincelRoxo}" HorizontalAlignment="Left"
+                                                    Width="{Binding Proporcao, Converter={StaticResource ProporcaoParaLargura}, ConverterParameter=180}" />
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Cartao}">
+                    <StackPanel>
+                        <TextBlock Text="Motivos mais frequentes" Style="{StaticResource Titulo2}" Margin="0,0,0,12" />
+                        <ItemsControl ItemsSource="{Binding EntregasPorMotivo}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,0,0,10">
+                                        <Grid>
+                                            <TextBlock Text="{Binding Rotulo}" FontSize="12" />
+                                            <TextBlock Text="{Binding Quantidade}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Right" />
+                                        </Grid>
+                                        <Border Height="6" CornerRadius="3" Background="{StaticResource PincelVermelhoSuave}" Margin="0,4,0,0" HorizontalAlignment="Stretch">
+                                            <Border Height="6" CornerRadius="3" Background="{StaticResource PincelVermelho}" HorizontalAlignment="Left"
+                                                    Width="{Binding Proporcao, Converter={StaticResource ProporcaoParaLargura}, ConverterParameter=180}" />
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

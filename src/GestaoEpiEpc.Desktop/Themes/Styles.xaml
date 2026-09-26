@@ -1,0 +1,301 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+
+    <!-- O BundledTheme (App.xaml) já registra um estilo implícito por tipo de controle
+         (Button, TextBox, ComboBox, DataGrid, DatePicker, CheckBox...). Aqui só ajustamos o que
+         precisa de comportamento diferente do padrão — o resto herda o visual Material puro. -->
+
+    <Style x:Key="CelulaCentralizada" TargetType="TextBlock">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </Style>
+
+    <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource {x:Type DataGrid}}">
+        <Setter Property="AutoGenerateColumns" Value="False" />
+        <Setter Property="CanUserAddRows" Value="False" />
+        <Setter Property="CanUserDeleteRows" Value="False" />
+        <Setter Property="CanUserReorderColumns" Value="False" />
+        <Setter Property="CanUserResizeColumns" Value="True" />
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="RowHeaderWidth" Value="0" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="RowHeight" Value="52" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource PincelLinha}" />
+        <Setter Property="VerticalGridLinesBrush" Value="Transparent" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="ColumnHeaderHeight" Value="42" />
+    </Style>
+
+    <Style TargetType="{x:Type Window}">
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="Background" Value="{StaticResource PincelPaper}" />
+        <Setter Property="TextElement.FontSize" Value="13" />
+    </Style>
+
+    <!-- ===================== Campos de entrada ===================== -->
+    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="Padding" Value="10,9" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="MinHeight" Value="38" />
+        <Setter Property="Background" Value="{StaticResource PincelSurface}" />
+        <Setter Property="CaretBrush" Value="{StaticResource PincelAzul}" />
+        <Setter Property="SelectionBrush" Value="{StaticResource PincelAzulSuave}" />
+    </Style>
+
+    <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+        <Setter Property="Padding" Value="10,9" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="MinHeight" Value="38" />
+        <Setter Property="Background" Value="{StaticResource PincelSurface}" />
+    </Style>
+
+    <Style TargetType="{x:Type DatePicker}" BasedOn="{StaticResource {x:Type DatePicker}}">
+        <Setter Property="Padding" Value="10,9" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="MinHeight" Value="38" />
+        <Setter Property="Background" Value="{StaticResource PincelSurface}" />
+    </Style>
+
+    <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground" Value="{StaticResource PincelInk}" />
+    </Style>
+
+    <!-- ===================== Tipografia ===================== -->
+    <Style x:Key="Titulo1" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource PincelInk}" />
+    </Style>
+
+    <Style x:Key="Titulo2" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource PincelInk}" />
+    </Style>
+
+    <Style x:Key="Eyebrow" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource PincelAzul}" />
+    </Style>
+
+    <Style x:Key="TextoSecundario" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12.5" />
+        <Setter Property="Foreground" Value="{StaticResource PincelInkSuave}" />
+    </Style>
+
+    <!-- ===================== Botões nomeados (herdam o estilo Material implícito) ===================== -->
+    <Style x:Key="BotaoPrimario" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Background" Value="{StaticResource PincelAzul}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PincelAzul}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Padding" Value="18,10" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="{StaticResource CorAzul}" Direction="270" ShadowDepth="1.5" BlurRadius="12" Opacity="0.28" RenderingBias="Quality" />
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource PincelAzulEscuro}" />
+                <Setter Property="BorderBrush" Value="{StaticResource PincelAzulEscuro}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Effect" Value="{x:Null}" />
+                <Setter Property="Opacity" Value="0.5" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="BotaoSecundario" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Background" Value="{StaticResource PincelSurface}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PincelLinha}" />
+        <Setter Property="Foreground" Value="{StaticResource PincelInk}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Padding" Value="16,9" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource PincelPaper}" />
+                <Setter Property="BorderBrush" Value="{StaticResource PincelAzul}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="BotaoPerigo" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Background" Value="{StaticResource PincelVermelho}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PincelVermelho}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Padding" Value="16,9" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="{StaticResource CorVermelho}" Direction="270" ShadowDepth="1.5" BlurRadius="12" Opacity="0.25" RenderingBias="Quality" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="BotaoTexto" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource PincelAzul}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource PincelAzulSuave}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- ===================== Cartão elevado ===================== -->
+    <Style x:Key="Cartao" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource PincelSurface}" />
+        <Setter Property="BorderBrush" Value="{StaticResource PincelLinha}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="Padding" Value="20" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#0F1720" Direction="270" ShadowDepth="1.5" BlurRadius="18" Opacity="0.07" RenderingBias="Quality" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="CartaoDestaque" TargetType="Border" BasedOn="{StaticResource Cartao}">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="{StaticResource PincelGradienteMarca}" />
+    </Style>
+
+    <!-- ===================== Chip de status ===================== -->
+    <Style x:Key="Chip" TargetType="Border">
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="9,4" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="MaxHeight" Value="24" />
+    </Style>
+
+    <!-- ===================== Avatar circular (iniciais) ===================== -->
+    <Style x:Key="Avatar" TargetType="Border">
+        <Setter Property="Width" Value="34" />
+        <Setter Property="Height" Value="34" />
+        <Setter Property="CornerRadius" Value="17" />
+        <Setter Property="Background" Value="{StaticResource PincelGradienteMarca}" />
+    </Style>
+
+    <!-- ===================== Popup de detalhes (DialogHost) — abre ao clicar numa linha de tabela,
+         no lugar de espremer todas as colunas na grade. ===================== -->
+    <Style x:Key="CartaoPopup" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource PincelSurface}" />
+        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="Padding" Value="26" />
+        <Setter Property="MinWidth" Value="380" />
+        <Setter Property="MaxWidth" Value="460" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#0F1720" Direction="270" ShadowDepth="4" BlurRadius="28" Opacity="0.22" RenderingBias="Quality" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="RotuloDetalhe" TargetType="TextBlock" BasedOn="{StaticResource TextoSecundario}">
+        <Setter Property="Margin" Value="0,0,0,3" />
+        <Setter Property="FontSize" Value="10.5" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <Style x:Key="ValorDetalhe" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource PincelInk}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <!-- ===================== Chip selecionável (matriz de elegibilidade) ===================== -->
+    <Style x:Key="ChipSelecionavel" TargetType="ToggleButton">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Padding" Value="14,12" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="Fundo" CornerRadius="10" Padding="{TemplateBinding Padding}"
+                            BorderThickness="1.5" Background="{StaticResource PincelSurface}" BorderBrush="{StaticResource PincelLinha}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter Grid.Column="0" VerticalAlignment="Center" />
+                            <Border x:Name="Marca" Grid.Column="1" Width="22" Height="22" CornerRadius="11"
+                                    Background="Transparent" BorderBrush="{StaticResource PincelLinha}" BorderThickness="1.5"
+                                    VerticalAlignment="Center" Margin="10,0,0,0">
+                                <materialDesign:PackIcon x:Name="Check" Kind="Check" Width="14" Height="14" Foreground="White"
+                                                          HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0" />
+                            </Border>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Fundo" Property="Background" Value="{StaticResource PincelAzulSuave}" />
+                            <Setter TargetName="Fundo" Property="BorderBrush" Value="{StaticResource PincelAzul}" />
+                            <Setter TargetName="Marca" Property="Background" Value="{StaticResource PincelAzul}" />
+                            <Setter TargetName="Marca" Property="BorderBrush" Value="{StaticResource PincelAzul}" />
+                            <Setter TargetName="Check" Property="Opacity" Value="1" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Fundo" Property="BorderBrush" Value="{StaticResource PincelAzul}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===================== Navegação lateral ===================== -->
+    <Style x:Key="ItemMenuLateral" TargetType="ListBoxItem">
+        <Setter Property="Padding" Value="10,8" />
+        <Setter Property="Margin" Value="12,2" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border x:Name="Fundo" Background="Transparent" CornerRadius="9" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Fundo" Property="Background" Value="#161F2C" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="IsSelected" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="Fundo" Property="Background" Value="#12181F" />
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ListaMenuLateral" TargetType="ListBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource ItemMenuLateral}" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+    </Style>
+
+</ResourceDictionary>

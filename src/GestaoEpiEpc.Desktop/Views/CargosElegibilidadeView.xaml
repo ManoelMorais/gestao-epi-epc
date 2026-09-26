@@ -1,0 +1,131 @@
+<UserControl x:Class="GestaoEpiEpc.Desktop.Views.CargosElegibilidadeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" d:DesignWidth="1100">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="REGRA DE NEGÓCIO" Style="{StaticResource Eyebrow}" Margin="0,0,0,4" />
+            <TextBlock Text="Cargos e Elegibilidade" Style="{StaticResource Titulo1}" />
+            <TextBlock Text="Regra central do sistema: define quais EPI/EPC cada cargo pode receber (RF26/RF27)" Style="{StaticResource TextoSecundario}" Margin="0,4,0,0" />
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Cargos -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" Style="{StaticResource Cartao}" Padding="8">
+                    <ListBox ItemsSource="{Binding Cargos}" SelectedItem="{Binding CargoSelecionado}" BorderThickness="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="6,4">
+                                    <materialDesign:PackIcon Kind="BriefcaseOutline" Width="17" Height="17" VerticalAlignment="Center"
+                                                              Foreground="{StaticResource PincelInkSuave}" Margin="0,0,10,0" />
+                                    <TextBlock Text="{Binding Nome}" VerticalAlignment="Center" FontSize="13" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+
+                <Border Grid.Row="1" Style="{StaticResource Cartao}" Margin="0,14,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Novo cargo" Style="{StaticResource Titulo2}" Margin="0,0,0,10" />
+                        <TextBox Text="{Binding NovoCargoNome, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" />
+                        <Button Content="Adicionar" Style="{StaticResource BotaoSecundario}" Command="{Binding CriarCargoCommand}" HorizontalAlignment="Left" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Matriz de elegibilidade -->
+            <Border Grid.Column="2" Style="{StaticResource Cartao}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="0,0,0,14">
+                        <TextBlock FontSize="14" FontWeight="SemiBold">
+                            <Run Text="Itens elegíveis para: " />
+                            <Run Text="{Binding CargoSelecionado.Nome, FallbackValue='(selecione um cargo)'}" Foreground="{StaticResource PincelAzul}" />
+                        </TextBlock>
+                        <TextBlock Text="Itens não marcados ficam bloqueados no registro de entrega do mobile." Style="{StaticResource TextoSecundario}" Margin="0,2,0,0" />
+                    </StackPanel>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding ItensDoCatalogo}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="2" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <ToggleButton Style="{StaticResource ChipSelecionavel}" IsChecked="{Binding Selecionado, Mode=TwoWay}" Margin="0,0,10,10">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border Width="30" Height="30" CornerRadius="8" Margin="0,0,10,0">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Background" Value="{StaticResource PincelAzulSuave}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Item.Categoria.Tipo}" Value="Epc">
+                                                                <Setter Property="Background" Value="{StaticResource PincelLaranjaSuave}" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <materialDesign:PackIcon Kind="{Binding Item.Categoria.Tipo, Converter={StaticResource TipoItemParaIcone}}" Width="16" Height="16"
+                                                                          HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <materialDesign:PackIcon.Style>
+                                                        <Style TargetType="materialDesign:PackIcon">
+                                                            <Setter Property="Foreground" Value="{StaticResource PincelAzul}" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Item.Categoria.Tipo}" Value="Epc">
+                                                                    <Setter Property="Foreground" Value="{StaticResource PincelLaranja}" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </materialDesign:PackIcon.Style>
+                                                </materialDesign:PackIcon>
+                                            </Border>
+                                            <StackPanel VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Item.Nome}" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap" MaxWidth="180" />
+                                                <TextBlock Text="{Binding Item.Categoria.Nome}" Style="{StaticResource TextoSecundario}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </ToggleButton>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,16,0,0">
+                        <Button Content="Salvar elegibilidade" Style="{StaticResource BotaoPrimario}"
+                                Command="{Binding SalvarPermissoesCommand}" />
+                        <TextBlock Text="{Binding Mensagem}" Style="{StaticResource TextoSecundario}"
+                                    VerticalAlignment="Center" Margin="14,0,0,0" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>
