@@ -1,0 +1,52 @@
+{
+  "expo": {
+    "name": "Amperion EPI",
+    "slug": "gestao-epi-epc-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#1D4ED8",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "br.com.amperion.epi",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "O app usa suas fotos para anexar imagens do EPI/EPC na solicitação de troca.",
+          "cameraPermission": "O app usa a câmera para fotografar o EPI/EPC na solicitação de troca."
+        }
+      ]
+    ],
+    "scheme": "gestaoepi",
+    "experiments": {
+      "typedRoutes": true
+    },
+    "owner": "manoelalmorias",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c444f067-bcc1-4dbb-bc5d-f2ad70b1f6ce"
+      }
+    }
+  }
+}
