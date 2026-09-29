@@ -6,4 +6,5 @@ public class Unidade : EntidadeBase
 {
     public required string Nome { get; set; }
     public required string Sigla { get; set; }
+    public required string Cidade { get; set; }
 }

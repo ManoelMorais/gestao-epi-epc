@@ -9,7 +9,7 @@ public class InMemoryColaboradorRepository(InMemoryDataStore store) : IColaborad
     {
         var colaborador = store.Colaboradores.FirstOrDefault(c => c.Id == id);
         if (colaborador is not null)
-            colaborador.Cargo ??= store.Cargos.FirstOrDefault(c => c.Id == colaborador.CargoId);
+            store.ResolverNavegacoes(colaborador);
 
         return Task.FromResult(colaborador);
     }
@@ -17,7 +17,7 @@ public class InMemoryColaboradorRepository(InMemoryDataStore store) : IColaborad
     public Task<IReadOnlyList<Colaborador>> ListarAsync()
     {
         foreach (var c in store.Colaboradores)
-            c.Cargo ??= store.Cargos.FirstOrDefault(cargo => cargo.Id == c.CargoId);
+            store.ResolverNavegacoes(c);
 
         return Task.FromResult<IReadOnlyList<Colaborador>>(store.Colaboradores.OrderBy(c => c.Nome).ToList());
     }
@@ -26,14 +26,23 @@ public class InMemoryColaboradorRepository(InMemoryDataStore store) : IColaborad
     {
         termo = termo.Trim();
         var resultado = store.Colaboradores
-            .Where(c => c.Nome.Contains(termo, StringComparison.OrdinalIgnoreCase) || c.Matricula.Contains(termo, StringComparison.OrdinalIgnoreCase))
+            .Where(c => c.Nome.Contains(termo, StringComparison.OrdinalIgnoreCase) || c.Drt.Contains(termo, StringComparison.OrdinalIgnoreCase))
             .OrderBy(c => c.Nome)
             .ToList();
 
         foreach (var c in resultado)
-            c.Cargo ??= store.Cargos.FirstOrDefault(cargo => cargo.Id == c.CargoId);
+            store.ResolverNavegacoes(c);
 
         return Task.FromResult<IReadOnlyList<Colaborador>>(resultado);
+    }
+
+    public Task<Colaborador?> ObterPorDrtAsync(string drt)
+    {
+        var colaborador = store.Colaboradores.FirstOrDefault(c => c.Drt == drt);
+        if (colaborador is not null)
+            store.ResolverNavegacoes(colaborador);
+
+        return Task.FromResult(colaborador);
     }
 
     public Task AdicionarAsync(Colaborador entidade)

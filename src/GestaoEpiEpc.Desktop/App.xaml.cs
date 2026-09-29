@@ -1,8 +1,10 @@
-using System.Windows;
+﻿using System.Windows;
 using GestaoEpiEpc.Application;
 using GestaoEpiEpc.Desktop.Common;
 using GestaoEpiEpc.Desktop.ViewModels;
 using GestaoEpiEpc.Infrastructure;
+using GestaoEpiEpc.Infrastructure.Persistence;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -15,10 +17,16 @@ public partial class App : System.Windows.Application
     public App()
     {
         _host = Host.CreateDefaultBuilder()
-            .ConfigureServices((_, services) =>
+            .UseContentRoot(AppContext.BaseDirectory)
+            .ConfigureAppConfiguration(config => config
+                // Connection string real fica fora do git; ver appsettings.Local.example.json.
+                .AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: false)
+                // Variáveis de ambiente continuam valendo mais que os arquivos (ex.: apontar para um banco de teste).
+                .AddEnvironmentVariables())
+            .ConfigureServices((context, services) =>
             {
                 services.AddApplication();
-                services.AddInfrastructure();
+                services.AddInfrastructure(context.Configuration.GetConnectionString("Supabase"));
 
                 services.AddSingleton<SessaoAtual>();
 
@@ -27,9 +35,8 @@ public partial class App : System.Windows.Application
                 services.AddTransient<ColaboradoresViewModel>();
                 services.AddTransient<CatalogoViewModel>();
                 services.AddTransient<CargosElegibilidadeViewModel>();
-                services.AddTransient<EntregasViewModel>();
+                services.AddTransient<SolicitacoesViewModel>();
                 services.AddTransient<UsuariosViewModel>();
-                services.AddTransient<AuditoriaViewModel>();
 
                 services.AddSingleton<MainWindow>();
             })
@@ -41,6 +48,12 @@ public partial class App : System.Windows.Application
         base.OnStartup(e);
         await _host.StartAsync();
 
+        if (!await InicializarBancoDeDadosAsync())
+        {
+            Shutdown(1);
+            return;
+        }
+
         var mainWindow = _host.Services.GetRequiredService<MainWindow>();
         var mainViewModel = _host.Services.GetRequiredService<MainViewModel>();
 
@@ -48,6 +61,28 @@ public partial class App : System.Windows.Application
         await mainViewModel.InicializarAsync();
 
         mainWindow.Show();
+    }
+
+    /// <summary>Aplica as migrations no Supabase (e popula um banco vazio). Sem connection string o app roda em memória.</summary>
+    private async Task<bool> InicializarBancoDeDadosAsync()
+    {
+        var inicializador = _host.Services.GetService<InicializadorBancoDeDados>();
+        if (inicializador is null) return true;
+
+        try
+        {
+            await inicializador.InicializarAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "Não foi possível conectar ao banco de dados (Supabase).\n\n" +
+                "Confira a connection string em appsettings.Local.json e a conexão com a internet.\n\n" +
+                $"Detalhe: {ex.GetBaseException().Message}",
+                "Gestão de EPI/EPC", MessageBoxButton.OK, MessageBoxImage.Error);
+            return false;
+        }
     }
 
     protected override async void OnExit(ExitEventArgs e)

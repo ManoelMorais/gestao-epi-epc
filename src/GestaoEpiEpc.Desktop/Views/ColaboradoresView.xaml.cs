@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using GestaoEpiEpc.Desktop.ViewModels;
@@ -23,6 +23,18 @@ public partial class ColaboradoresView : UserControl
     {
         if (DataContext is ColaboradoresViewModel viewModel)
             viewModel.FecharDetalhesCommand.Execute(null);
+    }
+
+    private async void Estornar_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is not ColaboradoresViewModel viewModel || sender is not FrameworkElement { DataContext: Entrega entrega })
+            return;
+
+        var owner = Window.GetWindow(this);
+        var justificativa = owner is null ? null : EstornoDialogWindow.PedirJustificativa(owner);
+        if (justificativa is null) return;
+
+        await viewModel.EstornarAsync(entrega, justificativa);
     }
 
     private void PopupCard_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => e.Handled = true;

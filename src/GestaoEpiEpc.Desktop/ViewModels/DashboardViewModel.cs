@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -27,6 +27,8 @@ public partial class DashboardViewModel(IDashboardService dashboardServico) : Ob
     [ObservableProperty] private int entregasUltimos30Dias;
     [ObservableProperty] private int totalEstornos;
     [ObservableProperty] private int colaboradoresAfastadosOuInativos;
+    [ObservableProperty] private int solicitacoesEmAberto;
+    [ObservableProperty] private int solicitacoesAguardandoRetirada;
 
     [ObservableProperty] private Geometry? evolucaoArea;
     [ObservableProperty] private Geometry? evolucaoLinha;
@@ -67,6 +69,8 @@ public partial class DashboardViewModel(IDashboardService dashboardServico) : Ob
         TotalTrocas = indicadores.TotalTrocas;
         EntregasUltimos30Dias = indicadores.EntregasUltimos30Dias;
         TotalEstornos = indicadores.TotalEstornos;
+        SolicitacoesEmAberto = indicadores.SolicitacoesEmAberto;
+        SolicitacoesAguardandoRetirada = indicadores.SolicitacoesAguardandoRetirada;
         ColaboradoresAfastadosOuInativos = indicadores.ColaboradoresAfastadosOuInativos;
 
         PreencherBarras(TopColaboradores, indicadores.TopColaboradores);
@@ -103,7 +107,8 @@ public partial class DashboardViewModel(IDashboardService dashboardServico) : Ob
             return;
         }
 
-        var maximo = Math.Max(1, pontos.Max(p => p.Quantidade));
+        // Escala mínima de 2 para o eixo nunca repetir rótulos (1, 0, 0) quando o período tem poucas entregas.
+        var maximo = Math.Max(2, pontos.Max(p => p.Quantidade));
         var alturaUtil = AlturaGrafico - PaddingGrafico * 2;
         var passo = pontos.Count > 1 ? (_larguraGrafico - PaddingGrafico * 2) / (pontos.Count - 1) : 0;
 

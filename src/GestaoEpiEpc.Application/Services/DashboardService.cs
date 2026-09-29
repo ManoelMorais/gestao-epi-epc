@@ -4,7 +4,10 @@ using GestaoEpiEpc.Domain.Enums;
 
 namespace GestaoEpiEpc.Application.Services;
 
-public class DashboardService(IEntregaRepository entregasRepositorio, IColaboradorRepository colaboradoresRepositorio) : IDashboardService
+public class DashboardService(
+    IEntregaRepository entregasRepositorio,
+    IColaboradorRepository colaboradoresRepositorio,
+    ISolicitacaoRepository solicitacoesRepositorio) : IDashboardService
 {
     public async Task<IndicadoresDashboard> ObterIndicadoresAsync(DateOnly? de = null, DateOnly? ate = null)
     {
@@ -15,6 +18,10 @@ public class DashboardService(IEntregaRepository entregasRepositorio, IColaborad
         });
 
         var colaboradores = await colaboradoresRepositorio.ListarAsync();
+        var solicitacoesAbertas = await solicitacoesRepositorio.ConsultarAsync(new FiltroSolicitacoes
+        {
+            Status = [StatusSolicitacao.Pendente, StatusSolicitacao.EmAnalise, StatusSolicitacao.Aprovada]
+        });
 
         var confirmadas = todas.Where(e => e.Status == StatusEntrega.Confirmada).ToList();
         var itensEntregues = confirmadas.SelectMany(e => e.Itens.Select(i => (Entrega: e, ItemEntregue: i))).ToList();
@@ -94,6 +101,8 @@ public class DashboardService(IEntregaRepository entregasRepositorio, IColaborad
             EntregasUltimos30Dias = confirmadas.Count(e => e.DataHora >= limiteTrintaDias),
             TotalEstornos = todas.Count(e => e.Status == StatusEntrega.Estornada),
             ColaboradoresAfastadosOuInativos = colaboradores.Count(c => c.Status != StatusColaborador.Ativo),
+            SolicitacoesEmAberto = solicitacoesAbertas.Count(s => s.Status != StatusSolicitacao.Aprovada),
+            SolicitacoesAguardandoRetirada = solicitacoesAbertas.Count(s => s.Status == StatusSolicitacao.Aprovada),
             TopColaboradores = topColaboradores,
             TopItens = topItens,
             EntregasPorSetor = entregasPorSetor,

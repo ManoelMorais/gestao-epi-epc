@@ -1,4 +1,4 @@
-<Application x:Class="GestaoEpiEpc.Desktop.App"
+﻿<Application x:Class="GestaoEpiEpc.Desktop.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:GestaoEpiEpc.Desktop"
@@ -28,6 +28,15 @@
             <conv:BoolParaSimNaoConverter x:Key="BoolParaSimNao" />
             <conv:EstadoVazioParaVisibilidadeConverter x:Key="EstadoVazioParaVisibilidade" />
             <BooleanToVisibilityConverter x:Key="BoolParaVisibilidade" />
+            <conv:BoolInvertidoConverter x:Key="BoolInvertido" />
+            <conv:BoolInvertidoParaVisibilidadeConverter x:Key="BoolInvertidoParaVisibilidade" />
+            <conv:StatusSolicitacaoParaCorConverter x:Key="StatusSolicitacaoParaCor" />
+            <conv:StatusSolicitacaoParaTextoConverter x:Key="StatusSolicitacaoParaTexto" />
+            <conv:StatusSolicitacaoParaIconeConverter x:Key="StatusSolicitacaoParaIcone" />
+            <conv:DiasParaVencerParaTextoConverter x:Key="DiasParaVencerParaTexto" />
+            <conv:DiasParaVencerParaCorConverter x:Key="DiasParaVencerParaCor" />
+            <conv:SvgParaGeometriaConverter x:Key="SvgParaGeometria" />
+            <conv:PodeEstornarParaVisibilidadeConverter x:Key="PodeEstornarParaVisibilidade" />
 
             <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
                 <views:DashboardView />
@@ -41,14 +50,11 @@
             <DataTemplate DataType="{x:Type vm:CargosElegibilidadeViewModel}">
                 <views:CargosElegibilidadeView />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:EntregasViewModel}">
-                <views:EntregasView />
-            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:UsuariosViewModel}">
                 <views:UsuariosView />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:AuditoriaViewModel}">
-                <views:AuditoriaView />
+            <DataTemplate DataType="{x:Type vm:SolicitacoesViewModel}">
+                <views:SolicitacoesView />
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

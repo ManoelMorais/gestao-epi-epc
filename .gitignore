@@ -482,3 +482,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Connection string real do Supabase (nunca versionar a senha do banco)
+appsettings.Local.json

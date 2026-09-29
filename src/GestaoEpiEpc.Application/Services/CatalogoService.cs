@@ -12,6 +12,9 @@ public class CatalogoService(
 
     public async Task<CategoriaItem> SalvarCategoriaAsync(CategoriaItem categoria)
     {
+        if (string.IsNullOrWhiteSpace(categoria.Codigo))
+            categoria.Codigo = "cat-" + Slug(categoria.Nome);
+
         if (await categoriasRepositorio.ObterPorIdAsync(categoria.Id) is null)
             await categoriasRepositorio.AdicionarAsync(categoria);
         else
@@ -34,6 +37,15 @@ public class CatalogoService(
             await itensRepositorio.AtualizarAsync(item);
 
         return item;
+    }
+
+    /// <summary>"Proteção dos Pés" → "protecao-dos-pes".</summary>
+    private static string Slug(string texto)
+    {
+        var semAcento = new string(texto.Normalize(System.Text.NormalizationForm.FormD)
+            .Where(c => System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c) != System.Globalization.UnicodeCategory.NonSpacingMark)
+            .ToArray()).ToLowerInvariant();
+        return System.Text.RegularExpressions.Regex.Replace(semAcento, "[^a-z0-9]+", "-").Trim('-');
     }
 
     public async Task InativarItemAsync(Guid itemId)

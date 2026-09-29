@@ -1,0 +1,346 @@
+<UserControl x:Class="GestaoEpiEpc.Desktop.Views.SolicitacoesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" d:DesignWidth="1300" d:DesignHeight="900">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="0,0,0,18">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Margin="0,0,24,0">
+                <TextBlock Text="OPERAÇÃO" Style="{StaticResource Eyebrow}" Margin="0,0,0,4" />
+                <TextBlock Text="Solicitações do app" Style="{StaticResource Titulo1}" />
+                <TextBlock Text="Pedidos de troca feitos pelos colaboradores no aplicativo. Analise, aprove ou recuse e registre a retirada — a entrega entra no histórico automaticamente."
+                           Style="{StaticResource TextoSecundario}" Margin="0,4,0,0" TextWrapping="Wrap" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom">
+                <StackPanel Margin="0,0,10,0">
+                    <TextBlock Text="Buscar" Style="{StaticResource TextoSecundario}" Margin="0,0,0,4" />
+                    <TextBox Text="{Binding TermoBusca, UpdateSourceTrigger=PropertyChanged}" Width="250" KeyDown="Busca_KeyDown"
+                             ToolTip="Protocolo, nome ou DRT do colaborador, ou nome do item" />
+                </StackPanel>
+                <StackPanel Margin="0,0,10,0">
+                    <TextBlock Text="Unidade" Style="{StaticResource TextoSecundario}" Margin="0,0,0,4" />
+                    <ComboBox ItemsSource="{Binding Unidades}" SelectedItem="{Binding UnidadeFiltro}" DisplayMemberPath="Nome" Width="170" />
+                </StackPanel>
+                <Button Content="Buscar" Style="{StaticResource BotaoPrimario}" VerticalAlignment="Bottom" Command="{Binding BuscarCommand}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Abas de status + busca -->
+        <Grid Grid.Row="1" Margin="0,0,0,14">
+
+            <ItemsControl ItemsSource="{Binding Grupos}" VerticalAlignment="Center">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <RadioButton Style="{StaticResource AbaFiltro}" GroupName="GrupoSolicitacao"
+                                     IsChecked="{Binding Selecionado, Mode=TwoWay}" Margin="0,0,8,6">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Titulo}" VerticalAlignment="Center" />
+                                <Border x:Name="Contador" CornerRadius="9" MinWidth="22" Height="18" Padding="6,0" Margin="8,0,0,0"
+                                        Background="{StaticResource PincelLinha}" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Quantidade}" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                            </StackPanel>
+                        </RadioButton>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="460" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Lista -->
+            <Border Grid.Column="0" Style="{StaticResource Cartao}" Padding="0" Margin="0,0,16,0">
+                <Grid>
+                    <DataGrid ItemsSource="{Binding Solicitacoes}" SelectedItem="{Binding SolicitacaoSelecionada}"
+                              IsReadOnly="True" BorderThickness="0" SelectionMode="Single">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Protocolo" Width="150">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Protocolo}" FontWeight="SemiBold" />
+                                            <TextBlock Text="{Binding CriadaEm, StringFormat=dd/MM/yyyy HH:mm}" FontSize="11" Foreground="{StaticResource PincelInkSuave}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Colaborador" Width="230">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Border Width="28" Height="28" CornerRadius="14" Background="{StaticResource PincelAzulSuave}">
+                                                <TextBlock Text="{Binding Colaborador.Nome, Converter={StaticResource Iniciais}}" FontSize="10" FontWeight="Bold"
+                                                           Foreground="{StaticResource PincelAzul}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Border>
+                                            <StackPanel Margin="8,0,0,0" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Colaborador.Nome}" TextTrimming="CharacterEllipsis" />
+                                                <TextBlock FontSize="11" Foreground="{StaticResource PincelInkSuave}">
+                                                    <Run Text="DRT" /> <Run Text="{Binding Colaborador.Drt, Mode=OneWay}" /> <Run Text="·" /> <Run Text="{Binding Colaborador.Unidade.Sigla, Mode=OneWay}" />
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Item" Width="250">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Item.Nome}" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="{Binding Motivo.Descricao}" FontSize="11" Foreground="{StaticResource PincelInkSuave}" TextTrimming="CharacterEllipsis" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Status" Width="130">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource Chip}" Background="{Binding Status, Converter={StaticResource StatusSolicitacaoParaCor}}" Opacity="0.9">
+                                            <TextBlock Text="{Binding Status, Converter={StaticResource StatusSolicitacaoParaTexto}}" Foreground="White" FontSize="11" FontWeight="SemiBold" />
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False"
+                                Visibility="{Binding Carregando, Converter={StaticResource BoolParaVisibilidade}}">
+                        <ProgressBar IsIndeterminate="True" Width="120" Height="3" Foreground="{StaticResource PincelAzul}" />
+                        <TextBlock Text="Carregando solicitações..." Style="{StaticResource TextoSecundario}" Margin="0,12,0,0" HorizontalAlignment="Center" />
+                    </StackPanel>
+
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False">
+                        <StackPanel.Visibility>
+                            <MultiBinding Converter="{StaticResource EstadoVazioParaVisibilidade}">
+                                <Binding Path="Carregando" />
+                                <Binding Path="Solicitacoes.Count" />
+                            </MultiBinding>
+                        </StackPanel.Visibility>
+                        <materialDesign:PackIcon Kind="InboxOutline" Width="38" Height="38" Foreground="{StaticResource PincelInkSuave}" HorizontalAlignment="Center" />
+                        <TextBlock Text="Nenhuma solicitação nesta aba" Style="{StaticResource TextoSecundario}" Margin="0,12,0,0" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Painel de análise -->
+            <Border Grid.Column="1" Style="{StaticResource Cartao}" Padding="0">
+                <Grid>
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Visibility="{Binding TemSelecao, Converter={StaticResource BoolInvertidoParaVisibilidade}}">
+                        <materialDesign:PackIcon Kind="GestureTapButton" Width="38" Height="38" Foreground="{StaticResource PincelInkSuave}" HorizontalAlignment="Center" />
+                        <TextBlock Text="Selecione uma solicitação" Style="{StaticResource TextoSecundario}" Margin="0,12,0,0" />
+                    </StackPanel>
+
+                    <Grid Visibility="{Binding TemSelecao, Converter={StaticResource BoolParaVisibilidade}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Padding="22,20,22,8">
+                            <StackPanel DataContext="{Binding SolicitacaoSelecionada}">
+                                <!-- Cabeçalho -->
+                                <Grid Margin="0,0,0,16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Protocolo}" Style="{StaticResource Titulo2}" FontSize="18" />
+                                        <TextBlock Text="{Binding CriadaEm, StringFormat=Enviada pelo app em {0:dd/MM/yyyy} às {0:HH:mm}}" Style="{StaticResource TextoSecundario}" Margin="0,2,0,0" />
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Style="{StaticResource Chip}" VerticalAlignment="Top"
+                                            Background="{Binding Status, Converter={StaticResource StatusSolicitacaoParaCor}}">
+                                        <TextBlock Text="{Binding Status, Converter={StaticResource StatusSolicitacaoParaTexto}}" Foreground="White" FontSize="11" FontWeight="SemiBold" />
+                                    </Border>
+                                </Grid>
+
+                                <!-- Colaborador -->
+                                <Border Background="{StaticResource PincelPaper}" CornerRadius="10" Padding="12" Margin="0,0,0,12">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Width="40" Height="40" CornerRadius="20" Background="{StaticResource PincelAzulSuave}" Margin="0,0,12,0">
+                                            <TextBlock Text="{Binding Colaborador.Nome, Converter={StaticResource Iniciais}}" FontSize="14" FontWeight="Bold"
+                                                       Foreground="{StaticResource PincelAzul}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Colaborador.Nome}" FontWeight="SemiBold" Foreground="{StaticResource PincelInk}" />
+                                            <TextBlock FontSize="12" Foreground="{StaticResource PincelInkSuave}">
+                                                <Run Text="DRT" /> <Run Text="{Binding Colaborador.Drt, Mode=OneWay}" /> <Run Text="·" /> <Run Text="{Binding Colaborador.Cargo.Nome, Mode=OneWay}" />
+                                            </TextBlock>
+                                            <TextBlock FontSize="12" Foreground="{StaticResource PincelInkSuave}">
+                                                <Run Text="{Binding Colaborador.Unidade.Nome, Mode=OneWay}" /> <Run Text="·" /> <Run Text="{Binding Colaborador.Telefone, Mode=OneWay}" />
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Item pedido -->
+                                <UniformGrid Columns="2" Margin="0,4,0,0">
+                                    <StackPanel Margin="0,0,10,14">
+                                        <TextBlock Text="ITEM" Style="{StaticResource RotuloDetalhe}" />
+                                        <TextBlock Text="{Binding Item.Nome}" Style="{StaticResource ValorDetalhe}" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,0,14">
+                                        <TextBlock Text="MOTIVO" Style="{StaticResource RotuloDetalhe}" />
+                                        <TextBlock Text="{Binding Motivo.Descricao}" Style="{StaticResource ValorDetalhe}" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,10,14">
+                                        <TextBlock Text="QUANTIDADE" Style="{StaticResource RotuloDetalhe}" />
+                                        <TextBlock Text="{Binding Quantidade}" Style="{StaticResource ValorDetalhe}" />
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,0,14">
+                                        <TextBlock Text="TAMANHO" Style="{StaticResource RotuloDetalhe}" />
+                                        <TextBlock Text="{Binding Tamanho, TargetNullValue=—}" Style="{StaticResource ValorDetalhe}" />
+                                    </StackPanel>
+                                </UniformGrid>
+
+                                <!-- Relato -->
+                                <TextBlock Text="RELATO DO COLABORADOR" Style="{StaticResource RotuloDetalhe}" Margin="0,0,0,6" />
+                                <Border BorderBrush="{StaticResource PincelAzul}" BorderThickness="3,0,0,0" Padding="12,4" Margin="0,0,0,16">
+                                    <TextBlock Text="{Binding Relato}" TextWrapping="Wrap" FontStyle="Italic" Foreground="{StaticResource PincelInkAlt}" />
+                                </Border>
+
+                                <!-- Material antigo -->
+                                <StackPanel Visibility="{Binding DataContext.TemMaterialAntigo, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolParaVisibilidade}}">
+                                    <TextBlock Text="MATERIAL ANTIGO" Style="{StaticResource RotuloDetalhe}" Margin="0,0,0,6" />
+                                    <Border BorderBrush="{StaticResource PincelLinha}" BorderThickness="1" CornerRadius="10" Padding="12,10" Margin="0,0,0,16">
+                                        <UniformGrid Columns="2">
+                                            <StackPanel Margin="0,0,10,8">
+                                                <TextBlock Text="Lote" Style="{StaticResource TextoSecundario}" FontSize="11" />
+                                                <TextBlock Text="{Binding MaterialLote, TargetNullValue=—}" Foreground="{StaticResource PincelInk}" />
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,0,8">
+                                                <TextBlock Text="Marca" Style="{StaticResource TextoSecundario}" FontSize="11" />
+                                                <TextBlock Text="{Binding MaterialMarca, TargetNullValue=—}" Foreground="{StaticResource PincelInk}" />
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,10,0">
+                                                <TextBlock Text="Fabricação" Style="{StaticResource TextoSecundario}" FontSize="11" />
+                                                <TextBlock Text="{Binding MaterialFabricacao, TargetNullValue=—}" Foreground="{StaticResource PincelInk}" />
+                                            </StackPanel>
+                                            <StackPanel>
+                                                <TextBlock Text="Recebido em" Style="{StaticResource TextoSecundario}" FontSize="11" />
+                                                <TextBlock Text="{Binding MaterialDataEntrega, StringFormat=dd/MM/yyyy, TargetNullValue=—}" Foreground="{StaticResource PincelInk}" />
+                                            </StackPanel>
+                                        </UniformGrid>
+                                    </Border>
+                                </StackPanel>
+
+                                <!-- Assinatura desenhada no app -->
+                                <TextBlock Text="ASSINATURA DO COLABORADOR" Style="{StaticResource RotuloDetalhe}" Margin="0,0,0,6" />
+                                <Border Background="{StaticResource PincelPaper}" CornerRadius="10" Height="110" Padding="10" Margin="0,0,0,18">
+                                    <Viewbox Stretch="Uniform">
+                                        <Canvas Width="300" Height="120">
+                                            <Path Data="{Binding Assinatura, Converter={StaticResource SvgParaGeometria}}" Stroke="{StaticResource PincelInk}"
+                                                  StrokeThickness="2.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" />
+                                            <Line X1="10" Y1="108" X2="290" Y2="108" Stroke="{StaticResource PincelLinha}" StrokeThickness="1" StrokeDashArray="4 3" />
+                                        </Canvas>
+                                    </Viewbox>
+                                </Border>
+
+                                <!-- Linha do tempo -->
+                                <TextBlock Text="ANDAMENTO" Style="{StaticResource RotuloDetalhe}" Margin="0,0,0,8" />
+                                <ItemsControl ItemsSource="{Binding Historico}" Margin="0,0,0,8">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,0,0,12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <Border Width="28" Height="28" CornerRadius="14" VerticalAlignment="Top" Margin="0,0,12,0"
+                                                        Background="{Binding Status, Converter={StaticResource StatusSolicitacaoParaCor}}">
+                                                    <materialDesign:PackIcon Kind="{Binding Status, Converter={StaticResource StatusSolicitacaoParaIcone}}" Width="15" Height="15"
+                                                                             Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </Border>
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBlock>
+                                                        <Run Text="{Binding Status, Converter={StaticResource StatusSolicitacaoParaTexto}, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource PincelInk}" />
+                                                        <Run Text="{Binding DataHora, StringFormat=' · {0:dd/MM/yyyy HH:mm}', Mode=OneWay}" Foreground="{StaticResource PincelInkSuave}" FontSize="11" />
+                                                    </TextBlock>
+                                                    <TextBlock Text="{Binding Responsavel}" FontSize="12" Foreground="{StaticResource PincelInkSuave}" />
+                                                    <TextBlock Text="{Binding Comentario}" FontSize="12" TextWrapping="Wrap" Foreground="{StaticResource PincelInkAlt}" Margin="0,2,0,0">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Style.Triggers>
+                                                                    <Trigger Property="Text" Value="">
+                                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                                    </Trigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- Mensagem + ações -->
+                        <Border Grid.Row="1" BorderBrush="{StaticResource PincelLinha}" BorderThickness="0,1,0,0" Padding="22,14">
+                            <StackPanel>
+                                <Border CornerRadius="8" Padding="12,8" Margin="0,0,0,12">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="{StaticResource PincelVerdeSuave}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Mensagem}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding MensagemEhErro}" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource PincelVermelhoSuave}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock Text="{Binding Mensagem}" TextWrapping="Wrap" FontSize="12" Foreground="{StaticResource PincelInk}" />
+                                </Border>
+
+                                <WrapPanel HorizontalAlignment="Right" IsEnabled="{Binding Processando, Converter={StaticResource BoolInvertido}}">
+                                    <Button Content="Iniciar análise" Style="{StaticResource BotaoSecundario}" Margin="0,0,8,0"
+                                            Command="{Binding IniciarAnaliseCommand}"
+                                            Visibility="{Binding PodeIniciarAnalise, Converter={StaticResource BoolParaVisibilidade}}" />
+                                    <Button Content="Recusar" Style="{StaticResource BotaoPerigo}" Margin="0,0,8,0" Click="Recusar_Click"
+                                            Visibility="{Binding PodeAprovarOuRecusar, Converter={StaticResource BoolParaVisibilidade}}" />
+                                    <Button Content="Aprovar" Style="{StaticResource BotaoPrimario}" Click="Aprovar_Click"
+                                            Visibility="{Binding PodeAprovarOuRecusar, Converter={StaticResource BoolParaVisibilidade}}" />
+                                    <Button Style="{StaticResource BotaoPrimario}" Click="RegistrarEntrega_Click"
+                                            Visibility="{Binding PodeRegistrarEntrega, Converter={StaticResource BoolParaVisibilidade}}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="PackageVariantClosedCheck" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                            <TextBlock Text="Registrar retirada" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

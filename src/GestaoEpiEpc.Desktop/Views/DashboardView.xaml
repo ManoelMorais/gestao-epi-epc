@@ -1,4 +1,4 @@
-<UserControl x:Class="GestaoEpiEpc.Desktop.Views.DashboardView"
+﻿<UserControl x:Class="GestaoEpiEpc.Desktop.Views.DashboardView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -63,10 +63,11 @@
                 <Border Style="{StaticResource Cartao}" Margin="0,0,10,0">
                     <StackPanel>
                         <Border Width="34" Height="34" CornerRadius="9" Background="{StaticResource PincelCianoSuave}" HorizontalAlignment="Left" Margin="0,0,0,12">
-                            <materialDesign:PackIcon Kind="UndoVariant" Width="18" Height="18" Foreground="{StaticResource PincelCiano}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <materialDesign:PackIcon Kind="CellphoneCheck" Width="18" Height="18" Foreground="{StaticResource PincelCiano}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
-                        <TextBlock Text="ESTORNOS" Style="{StaticResource TextoSecundario}" />
-                        <TextBlock Text="{Binding TotalEstornos}" FontSize="26" FontWeight="Bold" Foreground="{StaticResource PincelInk}" Margin="0,2,0,0" />
+                        <TextBlock Text="PEDIDOS DO APP" Style="{StaticResource TextoSecundario}" />
+                        <TextBlock Text="{Binding SolicitacoesEmAberto}" FontSize="26" FontWeight="Bold" Foreground="{StaticResource PincelInk}" Margin="0,2,0,0" />
+                        <TextBlock Text="{Binding SolicitacoesAguardandoRetirada, StringFormat={}{0} aguardando retirada}" FontSize="11" Foreground="{StaticResource PincelInkSuave}" />
                     </StackPanel>
                 </Border>
                 <Border Style="{StaticResource Cartao}" Margin="0,0,10,0">

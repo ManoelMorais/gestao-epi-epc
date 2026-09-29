@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GestaoEpiEpc.Application.Services;
@@ -21,9 +21,9 @@ public partial class MainViewModel : ObservableObject, IInicializavel
     [
         new() { Titulo = "Dashboard", Icone = PackIconKind.ViewDashboard, TipoViewModel = typeof(DashboardViewModel),
             PerfisPermitidos = [PerfilUsuario.Gestao, PerfilUsuario.SegurancaTrabalho, PerfilUsuario.Rh, PerfilUsuario.Administrador] },
+        new() { Titulo = "Solicitações do app", Icone = PackIconKind.CellphoneCheck, TipoViewModel = typeof(SolicitacoesViewModel),
+            PerfisPermitidos = [PerfilUsuario.Gestao, PerfilUsuario.SegurancaTrabalho, PerfilUsuario.Administrador] },
         new() { Titulo = "Colaboradores", Icone = PackIconKind.AccountMultiple, TipoViewModel = typeof(ColaboradoresViewModel),
-            PerfisPermitidos = [PerfilUsuario.Gestao, PerfilUsuario.SegurancaTrabalho, PerfilUsuario.Rh, PerfilUsuario.Administrador] },
-        new() { Titulo = "Entregas", Icone = PackIconKind.TruckDelivery, TipoViewModel = typeof(EntregasViewModel),
             PerfisPermitidos = [PerfilUsuario.Gestao, PerfilUsuario.SegurancaTrabalho, PerfilUsuario.Rh, PerfilUsuario.Administrador] },
         new() { Titulo = "Catálogo EPI/EPC", Icone = PackIconKind.ShieldCheck, TipoViewModel = typeof(CatalogoViewModel),
             PerfisPermitidos = [PerfilUsuario.Administrador] },
@@ -31,8 +31,6 @@ public partial class MainViewModel : ObservableObject, IInicializavel
             PerfisPermitidos = [PerfilUsuario.Administrador] },
         new() { Titulo = "Usuários", Icone = PackIconKind.AccountCog, TipoViewModel = typeof(UsuariosViewModel),
             PerfisPermitidos = [PerfilUsuario.Administrador] },
-        new() { Titulo = "Auditoria", Icone = PackIconKind.ClipboardTextClock, TipoViewModel = typeof(AuditoriaViewModel),
-            PerfisPermitidos = [PerfilUsuario.Administrador, PerfilUsuario.SegurancaTrabalho] },
     ];
 
     public MainViewModel(IUsuarioService usuarioServico, SessaoAtual sessao, IServiceProvider serviceProvider)

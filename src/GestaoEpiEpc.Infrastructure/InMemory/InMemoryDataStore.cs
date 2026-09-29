@@ -21,6 +21,7 @@ public class InMemoryDataStore
     public List<Usuario> Usuarios { get; } = new();
     public List<Entrega> Entregas { get; } = new();
     public List<LogAuditoria> LogsAuditoria { get; } = new();
+    public List<Solicitacao> Solicitacoes { get; } = new();
 
     public InMemoryDataStore()
     {
@@ -33,7 +34,7 @@ public class InMemoryDataStore
     {
         entrega.Colaborador ??= Colaboradores.FirstOrDefault(c => c.Id == entrega.ColaboradorId);
         if (entrega.Colaborador is not null)
-            entrega.Colaborador.Cargo ??= Cargos.FirstOrDefault(c => c.Id == entrega.Colaborador.CargoId);
+            ResolverNavegacoes(entrega.Colaborador);
 
         entrega.Facilitador ??= Usuarios.FirstOrDefault(u => u.Id == entrega.FacilitadorId);
         entrega.Unidade ??= Unidades.FirstOrDefault(u => u.Id == entrega.UnidadeId);
@@ -45,5 +46,25 @@ public class InMemoryDataStore
             if (item.Item is not null)
                 item.Item.Categoria ??= CategoriasItem.FirstOrDefault(c => c.Id == item.Item.CategoriaId);
         }
+    }
+
+    public void ResolverNavegacoes(Colaborador colaborador)
+    {
+        colaborador.Cargo ??= Cargos.FirstOrDefault(c => c.Id == colaborador.CargoId);
+        colaborador.Unidade ??= Unidades.FirstOrDefault(u => u.Id == colaborador.UnidadeId);
+    }
+
+    public void ResolverNavegacoes(Solicitacao solicitacao)
+    {
+        solicitacao.Colaborador ??= Colaboradores.FirstOrDefault(c => c.Id == solicitacao.ColaboradorId);
+        if (solicitacao.Colaborador is not null)
+            ResolverNavegacoes(solicitacao.Colaborador);
+
+        solicitacao.Item ??= Itens.FirstOrDefault(i => i.Id == solicitacao.ItemId);
+        if (solicitacao.Item is not null)
+            solicitacao.Item.Categoria ??= CategoriasItem.FirstOrDefault(c => c.Id == solicitacao.Item.CategoriaId);
+
+        solicitacao.Motivo ??= MotivosMovimentacao.FirstOrDefault(m => m.Id == solicitacao.MotivoId);
+        solicitacao.Historico = solicitacao.Historico.OrderBy(e => e.DataHora).ToList();
     }
 }
