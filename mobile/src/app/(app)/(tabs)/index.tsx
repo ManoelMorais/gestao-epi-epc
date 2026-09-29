@@ -6,9 +6,9 @@ import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, T
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CartaoSolicitacao } from '@/components/CartaoSolicitacao';
 import { LinhaItemEmPosse } from '@/components/LinhaItemEmPosse';
-import { Avatar, Aviso, Cartao, EstadoVazio, IconeRedondo, TituloSecao } from '@/components/ui';
+import { Avatar, Aviso, Cartao, ErroCarregamento, EstadoVazio, IconeRedondo, TituloSecao } from '@/components/ui';
 import { useSessaoAtiva } from '@/context/SessaoContext';
-import { api } from '@/services/api';
+import { api, mensagemDeErro } from '@/services/api';
 import { cores, DIAS_ALERTA_VALIDADE, espaco, gradienteMarca, raio, sombra, visualStatusSolicitacao, type NomeIcone } from '@/theme/tema';
 import type { GrupoStatus, ResumoColaborador } from '@/types/dominio';
 import { primeiroNome, saudacao } from '@/utils/formatacao';
@@ -23,9 +23,15 @@ export default function TelaDashboard() {
   const [resumo, setResumo] = useState<ResumoColaborador | null>(null);
   const [atualizando, setAtualizando] = useState(false);
   const [mostrarTodos, setMostrarTodos] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
 
   const carregar = useCallback(async () => {
-    setResumo(await api.obterResumo(sessao));
+    try {
+      setResumo(await api.obterResumo(sessao));
+      setErro(null);
+    } catch (e) {
+      setErro(mensagemDeErro(e));
+    }
   }, [sessao]);
 
   // Recarrega sempre que a aba volta ao foco — assim uma solicitação nova aparece na hora.
@@ -71,7 +77,13 @@ export default function TelaDashboard() {
         </View>
       </LinearGradient>
 
-      {!resumo ? (
+      {!resumo && erro ? (
+        <View style={estilos.conteudo}>
+          <Cartao>
+            <ErroCarregamento mensagem={erro} onTentar={carregar} />
+          </Cartao>
+        </View>
+      ) : !resumo ? (
         <ActivityIndicator color={cores.azul} style={{ marginTop: 80 }} />
       ) : (
         <View style={estilos.conteudo}>

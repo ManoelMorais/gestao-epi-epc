@@ -21,6 +21,8 @@ const TEMPO_LIMITE_MS = 20_000;
 /** Erro "de negócio" levantado pelas funções do banco (RAISE EXCEPTION → código P0001). */
 const CODIGO_ERRO_NEGOCIO = 'P0001';
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 async function rpc<T>(funcao: string, parametros: Record<string, unknown> = {}): Promise<T> {
   const controle = new AbortController();
   const limite = setTimeout(() => controle.abort(), TEMPO_LIMITE_MS);
@@ -44,7 +46,13 @@ async function rpc<T>(funcao: string, parametros: Record<string, unknown> = {}):
   }
 
   const corpo = await resposta.text();
-  const dados = corpo ? JSON.parse(corpo) : null;
+  let dados: any = null;
+  try {
+    dados = corpo ? JSON.parse(corpo) : null;
+  } catch {
+    // Resposta que não é JSON (ex.: página HTML de um proxy num 502): cai no erro genérico abaixo.
+    if (resposta.ok) throw new Error(`Resposta inválida do servidor em ${funcao}.`);
+  }
 
   if (!resposta.ok) {
     const mensagem: string | undefined = dados?.message;
@@ -82,6 +90,8 @@ export const apiSupabase: GestaoEpiApi = {
   },
 
   async obterSolicitacao(sessao, id) {
+    // Id que nem é UUID (ex.: link antigo "sol-3") não existe: evita o erro de conversão do banco.
+    if (!UUID.test(id)) return undefined;
     // O banco devolve null para solicitação inexistente ou de outro colaborador.
     const solicitacao = await rpc<SolicitacaoDetalhada | null>('app_obter_solicitacao', { p_token: token(sessao), p_id: id });
     return solicitacao ?? undefined;

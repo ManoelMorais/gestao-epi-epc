@@ -4,9 +4,9 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CartaoSolicitacao } from '@/components/CartaoSolicitacao';
-import { CampoTexto, EstadoVazio } from '@/components/ui';
+import { CampoTexto, ErroCarregamento, EstadoVazio } from '@/components/ui';
 import { useSessaoAtiva } from '@/context/SessaoContext';
-import { api } from '@/services/api';
+import { api, mensagemDeErro } from '@/services/api';
 import { cores, espaco, visualStatusSolicitacao, type NomeIcone } from '@/theme/tema';
 import type { GrupoStatus, SolicitacaoDetalhada } from '@/types/dominio';
 
@@ -30,20 +30,30 @@ export default function TelaSolicitacoes() {
   const [termo, setTermo] = useState('');
 
   const [solicitacoes, setSolicitacoes] = useState<SolicitacaoDetalhada[] | null>(null);
+  const [erro, setErro] = useState<string | null>(null);
   const requisicaoAtual = useRef(0);
 
   // Recarrega quando o filtro muda e sempre que a aba volta ao foco (ex.: depois de
   // enviar uma solicitação). A busca por texto espera um pouco para não consultar a cada tecla.
+  const buscar = useCallback(async () => {
+    // Descarta respostas antigas se o filtro mudar antes de a anterior voltar.
+    const id = ++requisicaoAtual.current;
+    try {
+      const resultado = await api.listarSolicitacoes(sessao, { grupo, termo });
+      if (id === requisicaoAtual.current) {
+        setSolicitacoes(resultado);
+        setErro(null);
+      }
+    } catch (e) {
+      if (id === requisicaoAtual.current) setErro(mensagemDeErro(e));
+    }
+  }, [sessao, grupo, termo]);
+
   useFocusEffect(
     useCallback(() => {
-      const t = setTimeout(async () => {
-        // Descarta respostas antigas se o filtro mudar antes de a anterior voltar.
-        const id = ++requisicaoAtual.current;
-        const resultado = await api.listarSolicitacoes(sessao, { grupo, termo });
-        if (id === requisicaoAtual.current) setSolicitacoes(resultado);
-      }, termo ? 300 : 0);
+      const t = setTimeout(buscar, termo ? 300 : 0);
       return () => clearTimeout(t);
-    }, [sessao, grupo, termo]),
+    }, [buscar, termo]),
   );
 
   const contagem = useMemo(() => solicitacoes?.length ?? 0, [solicitacoes]);
@@ -53,7 +63,7 @@ export default function TelaSolicitacoes() {
       <View style={estilos.cabecalho}>
         <View>
           <Text style={estilos.titulo}>Minhas solicitações</Text>
-          <Text style={estilos.subtitulo}>{solicitacoes ? `${contagem} ${contagem === 1 ? 'solicitação' : 'solicitações'}` : 'Carregando…'}</Text>
+          <Text style={estilos.subtitulo}>{solicitacoes ? `${contagem} ${contagem === 1 ? 'solicitação' : 'solicitações'}` : erro ? 'Sem conexão' : 'Carregando…'}</Text>
         </View>
 
         <CampoTexto
@@ -93,7 +103,9 @@ export default function TelaSolicitacoes() {
         </ScrollView>
       </View>
 
-      {!solicitacoes ? (
+      {erro ? (
+        <ErroCarregamento mensagem={erro} onTentar={buscar} />
+      ) : !solicitacoes ? (
         <ActivityIndicator color={cores.azul} style={{ marginTop: 60 }} />
       ) : (
         <FlatList

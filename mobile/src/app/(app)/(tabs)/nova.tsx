@@ -6,10 +6,10 @@ import { useCallback, useMemo, useState, type ReactNode } from 'react';
 import { ActivityIndicator, FlatList, Image, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PainelAssinatura } from '@/components/Assinatura';
-import { Avatar, Aviso, Botao, CampoTexto, Cartao, Chip, EstadoVazio, IconeRedondo } from '@/components/ui';
+import { Avatar, Aviso, Botao, CampoTexto, Cartao, Chip, ErroCarregamento, EstadoVazio, IconeRedondo } from '@/components/ui';
 import { useSessaoAtiva } from '@/context/SessaoContext';
 import { tamanhosSugeridos } from '@/data/seed';
-import { api, ErroNegocio } from '@/services/api';
+import { api, ErroNegocio, mensagemDeErro } from '@/services/api';
 import { cores, espaco, gradienteMarca, iconeCategoria, raio, sombra, visualValidade, type NomeIcone } from '@/theme/tema';
 import type { ItemDetalhado, ItemEmPosse, MotivoMovimentacao, Sessao, SolicitacaoDetalhada } from '@/types/dominio';
 import { formatarData, formatarDataCompleta, lerData, mascaraData, mascaraMesAno, mesAnoValido } from '@/utils/formatacao';
@@ -28,18 +28,23 @@ export default function TelaNovaSolicitacao() {
   const [dados, setDados] = useState<Dados | null>(null);
   const [enviada, setEnviada] = useState<SolicitacaoDetalhada | null>(null);
   const [rodada, setRodada] = useState(0);
+  const [erroCarga, setErroCarga] = useState<string | null>(null);
+
+  const carregar = useCallback(async () => {
+    try {
+      const [elegiveis, motivos, emPosse] = await Promise.all([api.listarItensElegiveis(sessao), api.listarMotivos(), api.listarItensEmPosse(sessao)]);
+      setDados({ elegiveis, motivos, emPosse });
+      setErroCarga(null);
+    } catch (e) {
+      setErroCarga(mensagemDeErro(e));
+    }
+  }, [sessao]);
 
   // Recarrega catálogo e itens em posse sempre que a aba ganha foco.
   useFocusEffect(
     useCallback(() => {
-      let cancelado = false;
-      Promise.all([api.listarItensElegiveis(sessao), api.listarMotivos(), api.listarItensEmPosse(sessao)]).then(([elegiveis, motivos, emPosse]) => {
-        if (!cancelado) setDados({ elegiveis, motivos, emPosse });
-      });
-      return () => {
-        cancelado = true;
-      };
-    }, [sessao]),
+      carregar();
+    }, [carregar]),
   );
 
   function novaSolicitacao() {
@@ -49,6 +54,13 @@ export default function TelaNovaSolicitacao() {
   }
 
   if (enviada) return <Sucesso solicitacao={enviada} onNova={novaSolicitacao} />;
+  if (!dados && erroCarga) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: espaco.l }}>
+        <ErroCarregamento mensagem={erroCarga} onTentar={carregar} />
+      </View>
+    );
+  }
   if (!dados) return <ActivityIndicator color={cores.azul} style={{ marginTop: 120 }} />;
 
   // A chave remonta o formulário quando chega um item novo pela URL (ex.: tocar num

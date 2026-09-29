@@ -3,9 +3,9 @@ import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { AssinaturaSalva } from '@/components/Assinatura';
-import { Aviso, Cartao, Chip, EstadoVazio, IconeRedondo, TituloSecao } from '@/components/ui';
+import { Aviso, Cartao, Chip, ErroCarregamento, EstadoVazio, IconeRedondo, TituloSecao } from '@/components/ui';
 import { useSessaoAtiva } from '@/context/SessaoContext';
-import { api } from '@/services/api';
+import { api, mensagemDeErro } from '@/services/api';
 import { cores, espaco, etapasSolicitacao, iconeCategoria, raio, visualStatusSolicitacao, type NomeIcone } from '@/theme/tema';
 import type { EventoSolicitacao, SolicitacaoDetalhada, StatusSolicitacao } from '@/types/dominio';
 import { formatarData, formatarDataCompleta } from '@/utils/formatacao';
@@ -14,11 +14,25 @@ export default function TelaDetalheSolicitacao() {
   const sessao = useSessaoAtiva();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [solicitacao, setSolicitacao] = useState<SolicitacaoDetalhada | null | undefined>();
+  const [erro, setErro] = useState<string | null>(null);
+  const [tentativa, setTentativa] = useState(0);
 
   useEffect(() => {
-    api.obterSolicitacao(sessao, id).then((s) => setSolicitacao(s ?? null));
-  }, [sessao, id]);
+    let cancelado = false;
+    api
+      .obterSolicitacao(sessao, id)
+      .then((s) => {
+        if (cancelado) return;
+        setSolicitacao(s ?? null);
+        setErro(null);
+      })
+      .catch((e) => !cancelado && setErro(mensagemDeErro(e)));
+    return () => {
+      cancelado = true;
+    };
+  }, [sessao, id, tentativa]);
 
+  if (erro && solicitacao === undefined) return <ErroCarregamento mensagem={erro} onTentar={() => setTentativa((n) => n + 1)} />;
   if (solicitacao === undefined) return <ActivityIndicator color={cores.azul} style={{ marginTop: 60 }} />;
   if (solicitacao === null) return <EstadoVazio icone="file-question-outline" titulo="Solicitação não encontrada" />;
 

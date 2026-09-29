@@ -5,7 +5,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Avatar, Aviso, Botao, Cartao, Chip, IconeRedondo, TituloSecao } from '@/components/ui';
 import { useSessao, useSessaoAtiva } from '@/context/SessaoContext';
-import { api } from '@/services/api';
+import { api, mensagemDeErro } from '@/services/api';
 import { cores, espaco, iconeCategoria, visualStatusColaborador, type NomeIcone } from '@/theme/tema';
 import type { ItemDetalhado } from '@/types/dominio';
 import { formatarData } from '@/utils/formatacao';
@@ -18,10 +18,18 @@ export default function TelaPerfil() {
   const status = visualStatusColaborador[colaborador.status];
 
   const [liberados, setLiberados] = useState<ItemDetalhado[] | null>(null);
+  const [erro, setErro] = useState<string | null>(null);
   useFocusEffect(
     useCallback(() => {
       let cancelado = false;
-      api.listarItensElegiveis(sessao).then((lista) => !cancelado && setLiberados(lista));
+      api
+        .listarItensElegiveis(sessao)
+        .then((lista) => {
+          if (cancelado) return;
+          setLiberados(lista);
+          setErro(null);
+        })
+        .catch((e) => !cancelado && setErro(mensagemDeErro(e)));
       return () => {
         cancelado = true;
       };
@@ -58,7 +66,9 @@ export default function TelaPerfil() {
 
       <Cartao>
         <TituloSecao titulo="EPI/EPC liberados para o seu cargo" />
-        {liberados?.length === 0 ? (
+        {erro && !liberados ? (
+          <Text style={estilos.meta}>{erro}</Text>
+        ) : liberados?.length === 0 ? (
           <Text style={estilos.meta}>Seu cargo não exige EPI/EPC de campo.</Text>
         ) : (
           <View style={{ gap: 10 }}>

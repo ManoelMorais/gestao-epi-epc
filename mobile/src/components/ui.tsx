@@ -216,3 +216,15 @@ const estilos = StyleSheet.create({
   aviso: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, padding: 12, borderRadius: raio.m },
   avisoTexto: { flex: 1, fontSize: 13.5, fontWeight: '600', lineHeight: 19 },
 });
+
+/** Estado de falha ao carregar dados (sem internet, servidor fora do ar...), com nova tentativa. */
+export function ErroCarregamento({ mensagem, onTentar }: { mensagem: string; onTentar: () => void }) {
+  return (
+    <View style={estilos.vazio}>
+      <IconeRedondo icone="wifi-off" cor={cores.vermelho} fundo={cores.vermelhoSuave} tamanho={56} />
+      <Text style={estilos.vazioTitulo}>Não foi possível carregar</Text>
+      <Text style={estilos.vazioDescricao}>{mensagem}</Text>
+      <Botao titulo="Tentar de novo" icone="refresh" variante="secundario" onPress={onTentar} style={{ marginTop: 8, alignSelf: 'stretch' }} />
+    </View>
+  );
+}

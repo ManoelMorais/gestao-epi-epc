@@ -28,7 +28,7 @@ export interface GestaoEpiApi {
   criarSolicitacao(sessao: Sessao, input: NovaSolicitacaoInput): Promise<SolicitacaoDetalhada>;
 }
 
-export { ErroNegocio } from './erros';
+export { ErroNegocio, mensagemDeErro } from './erros';
 // Backend real: o mesmo banco (Supabase) do desktop. Para demonstrar sem internet, troque por
 // `export { apiEmMemoria as api } from './apiEmMemoria';` (dados de exemplo locais).
 export { apiSupabase as api } from './apiSupabase';
