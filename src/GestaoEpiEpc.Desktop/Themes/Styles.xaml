@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+                    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+                    xmlns:common="clr-namespace:GestaoEpiEpc.Desktop.Common">
 
     <!-- O BundledTheme (App.xaml) já registra um estilo implícito por tipo de controle
          (Button, TextBox, ComboBox, DataGrid, DatePicker, CheckBox...). Aqui só ajustamos o que
@@ -93,7 +94,35 @@
     </Style>
 
     <!-- ===================== Botões nomeados (herdam o estilo Material implícito) ===================== -->
-    <Style x:Key="BotaoPrimario" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+
+    <!-- Base dos botões nomeados. O estilo implícito de TextBlock acima (Foreground = Ink) também vale
+         dentro dos templates dos controles, então o texto gerado a partir do Content do botão ignorava o
+         Foreground do botão (texto escuro sobre azul/vermelho).
+         - Content em texto: o SeletorConteudoBotao usa um TextBlock com a cor ligada à do botão (valor
+           local vence o estilo implícito, que o WPF aplica direto da aplicação dentro de templates).
+         - Content montado na view (ícone + TextBlock): o estilo vazio abaixo substitui o implícito para
+           esses TextBlocks, que então herdam a cor do botão — e o PackIcon acompanha. -->
+    <common:SeletorConteudoBotao x:Key="SeletorConteudoBotao">
+        <common:SeletorConteudoBotao.ModeloTexto>
+            <DataTemplate>
+                <TextBlock Text="{Binding}"
+                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+            </DataTemplate>
+        </common:SeletorConteudoBotao.ModeloTexto>
+    </common:SeletorConteudoBotao>
+
+    <Style x:Key="BotaoBase" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="ContentTemplateSelector" Value="{StaticResource SeletorConteudoBotao}" />
+        <Style.Resources>
+            <Style TargetType="TextBlock" />
+            <Style TargetType="materialDesign:PackIcon">
+                <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+            </Style>
+        </Style.Resources>
+    </Style>
+
+    <Style x:Key="BotaoPrimario" TargetType="Button" BasedOn="{StaticResource BotaoBase}">
         <Setter Property="Background" Value="{StaticResource PincelAzul}" />
         <Setter Property="BorderBrush" Value="{StaticResource PincelAzul}" />
         <Setter Property="Foreground" Value="White" />
@@ -116,7 +145,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="BotaoSecundario" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+    <Style x:Key="BotaoSecundario" TargetType="Button" BasedOn="{StaticResource BotaoBase}">
         <Setter Property="Background" Value="{StaticResource PincelSurface}" />
         <Setter Property="BorderBrush" Value="{StaticResource PincelLinha}" />
         <Setter Property="Foreground" Value="{StaticResource PincelInk}" />
@@ -130,7 +159,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="BotaoPerigo" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+    <Style x:Key="BotaoPerigo" TargetType="Button" BasedOn="{StaticResource BotaoBase}">
         <Setter Property="Background" Value="{StaticResource PincelVermelho}" />
         <Setter Property="BorderBrush" Value="{StaticResource PincelVermelho}" />
         <Setter Property="Foreground" Value="White" />
@@ -143,7 +172,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="BotaoTexto" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+    <Style x:Key="BotaoTexto" TargetType="Button" BasedOn="{StaticResource BotaoBase}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource PincelAzul}" />
@@ -264,6 +293,11 @@
 
     <!-- ===================== Abas de filtro (pílulas com contador) ===================== -->
     <Style x:Key="AbaFiltro" TargetType="RadioButton">
+        <!-- Mesmo motivo do BotaoBase: sem isto, os TextBlocks do conteúdo pegam o estilo implícito (Ink)
+             e ficam escuros sobre o azul da aba selecionada, em vez de seguir o Foreground da aba. -->
+        <Style.Resources>
+            <Style TargetType="TextBlock" />
+        </Style.Resources>
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Foreground" Value="{StaticResource PincelInkAlt}" />
         <Setter Property="FontWeight" Value="SemiBold" />
